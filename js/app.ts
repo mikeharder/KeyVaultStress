@@ -6,6 +6,7 @@ import { SecretsClient } from "@azure/keyvault-secrets";
 async function main(): Promise<void> {
   commander
     .option('-i, --iterations <iterations>', 'number of iterations', 10)
+    .option('-d, --delete', 'delete secret between iterations', true)
     .option('-n, --newClientPerIteration', 'create new client for every iteration', false);
 
   commander.parse(process.argv);
@@ -37,6 +38,10 @@ async function main(): Promise<void> {
 
     const elapsedMs = endMs - startMs;
     log(`${i} ${result.value} ${Math.round(elapsedMs)}ms`);
+
+    if (commander.delete) {
+      await client.deleteSecret(secretName);
+    }
   }
 }
 
