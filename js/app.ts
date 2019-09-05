@@ -6,7 +6,7 @@ import { SecretsClient } from "@azure/keyvault-secrets";
 async function main(): Promise<void> {
   commander
     .option('-i, --iterations <iterations>', 'number of iterations', 10)
-    .option('-d, --delete', 'delete secret between iterations', true)
+    .option('-d, --delete', 'delete secret between iterations', false)
     .option('-n, --newClientPerIteration', 'create new client for every iteration', false);
 
   commander.parse(process.argv);
