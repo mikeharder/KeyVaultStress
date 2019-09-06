@@ -7,6 +7,7 @@ async function main(): Promise<void> {
   commander
     .option('-i, --iterations <iterations>', 'number of iterations', 10)
     .option('-d, --delete', 'delete secret between iterations', false)
+    .option('-m, --mockCredential', 'use mock credential instead of Azure AD', false)
     .option('-n, --newClientPerIteration', 'create new client for every iteration', false);
 
   commander.parse(process.argv);
@@ -16,25 +17,26 @@ async function main(): Promise<void> {
     throw 'Env var KEY_VAULT_URL must be set';
   }
 
-  // DefaultAzureCredential expects the following three environment variables:
-  // - AZURE_TENANT_ID: The tenant ID in Azure Active Directory
-  // - AZURE_CLIENT_ID: The application (client) ID registered in the AAD tenant
-  // - AZURE_CLIENT_SECRET: The client secret for the registered application
-  const credential = new DefaultAzureCredential();
-
-  class NullCredential implements TokenCredential {
+  class MockCredential implements TokenCredential {
     async getToken(scopes: string | string[], options?: GetTokenOptions): Promise<AccessToken | null> {
-      console.log("scopes:");
-      console.log(scopes);
-
-      console.log("options:");
-      console.log(options);
-
-      return null;
+      return {
+        token: "test-token",
+        expiresOnTimestamp: 9999999999
+      };
     }
   }
 
-  // const credential = new NullCredential();
+  let credential: TokenCredential;
+  if (commander.mockCredential) {
+    credential = new MockCredential();
+  }
+  else {
+    // DefaultAzureCredential expects the following three environment variables:
+    // - AZURE_TENANT_ID: The tenant ID in Azure Active Directory
+    // - AZURE_CLIENT_ID: The application (client) ID registered in the AAD tenant
+    // - AZURE_CLIENT_SECRET: The client secret for the registered application
+    credential = new DefaultAzureCredential();
+  }
 
   const secretName = "TestSecret";
   const value = "TestValue";
