@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import commander from "commander";
-import { DefaultAzureCredential } from "@azure/identity";
+import { DefaultAzureCredential, TokenCredential, GetTokenOptions, AccessToken } from "@azure/identity";
 import { SecretsClient } from "@azure/keyvault-secrets";
 
 async function main(): Promise<void> {
@@ -21,6 +21,20 @@ async function main(): Promise<void> {
   // - AZURE_CLIENT_ID: The application (client) ID registered in the AAD tenant
   // - AZURE_CLIENT_SECRET: The client secret for the registered application
   const credential = new DefaultAzureCredential();
+
+  class NullCredential implements TokenCredential {
+    async getToken(scopes: string | string[], options?: GetTokenOptions): Promise<AccessToken | null> {
+      console.log("scopes:");
+      console.log(scopes);
+
+      console.log("options:");
+      console.log(options);
+
+      return null;
+    }
+  }
+
+  // const credential = new NullCredential();
 
   const secretName = "TestSecret";
   const value = "TestValue";

@@ -9,6 +9,7 @@
   "dependencies": {
     "@azure/keyvault-secrets": "4.0.0-preview.4",
     "@azure/identity": "1.0.0-preview.2",
+    "@azure/core-http": "1.0.0-preview.2",
     "commander": "^3.0.0"
   },
   "devDependencies": {
