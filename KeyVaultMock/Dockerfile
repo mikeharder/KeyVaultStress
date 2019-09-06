@@ -1,3 +1,5 @@
+# 3.0-preview6 and newer is currently broken on Azure Ubuntu VMs
+# https://github.com/dotnet/dotnet-docker/issues/1294
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
 WORKDIR /app
 
